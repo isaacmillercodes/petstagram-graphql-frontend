@@ -104,6 +104,7 @@ class AuthForm extends Component {
       const token = response.data.loginUser.token
       if (token) {
         this.saveUserInfo(id, token)
+        this.props.history.push(`/profile/${id}`)
       }
     } else {
       const response = await this.props.registerUserMutation({
@@ -118,9 +119,9 @@ class AuthForm extends Component {
       const token = response.data.loginUser.token
       if (token) {
         this.saveUserInfo(id, token)
+        this.props.history.push(`/profile/${id}`)
       }
     }
-    this.props.history.push('/')
   }
 
   saveUserInfo = (id, token) => {
