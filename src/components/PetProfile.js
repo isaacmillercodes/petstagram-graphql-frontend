@@ -21,6 +21,8 @@ class PetProfile extends Component {
           profile_likes: nextProps.petProfileQuery.pet.profile_image.likes
         }
       )
+    } else if (nextProps.petProfileQuery.pet && this.state.profile_likes) {
+      this.setState({ profile_likes: ++this.state.profile_likes })
     }
   }
 
@@ -56,6 +58,7 @@ class PetProfile extends Component {
             {this.state.profile_caption}
             <span
               className="pull-right"
+              onClick={() => this.likeImage(this.state.profile_image_id)}
             >
               {this.state.profile_likes}
               <i className="fa fa-thumbs-o-up"/>
@@ -112,7 +115,7 @@ class PetProfile extends Component {
                 </div>
                 <div className="pet-name">
                   <p className="pull-left">
-                    {image.likes} <i className="fa fa-thumbs-o-up"/>
+                    {image.likes} <i className="fa fa-thumbs-o-up" onClick={() => this.likeImage(image.id)}/>
                   </p>
                 </div>
               </div>
@@ -134,6 +137,14 @@ class PetProfile extends Component {
     if (id) {
       this.setState({ followRequestSent: true })
     }
+  }
+
+  likeImage = async (image_id) => {
+    await this.props.likeImageMutation({
+      variables: {
+        image_id
+      }
+    })
   }
 
 }
@@ -186,6 +197,17 @@ const FOLLOW_PET_MUTATION = gql`
   }
 `
 
+const LIKE_IMAGE_MUTATION = gql`
+  mutation LikeImage($image_id: Int!) {
+    likeImage(
+      image_id: $image_id
+    ) {
+      id
+      likes
+    }
+  }
+`
+
 export default compose(
   graphql(PET_PROFILE_QUERY, {
     name: 'petProfileQuery',
@@ -204,5 +226,6 @@ export default compose(
         }
       ]
     })
-  })
+  }),
+  graphql(LIKE_IMAGE_MUTATION, { name: 'likeImageMutation' })
 )(PetProfile)
