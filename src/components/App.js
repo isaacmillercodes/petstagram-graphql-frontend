@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router-dom'
 import SplashPage from './SplashPage';
 import AuthForm from './AuthForm';
 import UserProfile from './UserProfile';
+import PetProfile from './PetProfile';
 
 class App extends Component {
   render() {
@@ -11,6 +12,7 @@ class App extends Component {
         <Route exact path='/' component={SplashPage}/>
         <Route exact path='/auth' component={AuthForm}/>
         <Route exact path='/profile/:id' component={UserProfile}/>
+        <Route exact path='/pet/:id' component={PetProfile}/>
       </Switch>
     );
   }
