@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { graphql, gql } from 'react-apollo';
+import { graphql, gql, compose } from 'react-apollo';
 import { Link } from 'react-router-dom';
 
 class PetProfile extends Component {
@@ -8,6 +8,7 @@ class PetProfile extends Component {
     profile_image_url: '',
     profile_caption: '',
     profile_likes: '',
+    followRequestSent: false
   }
 
   componentWillReceiveProps(nextProps) {
@@ -20,6 +21,8 @@ class PetProfile extends Component {
           profile_likes: nextProps.petProfileQuery.pet.profile_image.likes
         }
       )
+    } else if (nextProps.petProfileQuery.pet && this.state.profile_likes) {
+      this.setState({ profile_likes: ++this.state.profile_likes })
     }
   }
 
@@ -55,6 +58,7 @@ class PetProfile extends Component {
             {this.state.profile_caption}
             <span
               className="pull-right"
+              onClick={() => this.likeImage(this.state.profile_image_id)}
             >
               {this.state.profile_likes}
               <i className="fa fa-thumbs-o-up"/>
@@ -73,6 +77,22 @@ class PetProfile extends Component {
               </Link>
             </div>
           ))}
+          {!viewerFollower &&
+            <button
+              className="btn btn-success profile-button"
+              onClick={() => this.followPet()}
+            >
+              <h4>Follow Pet</h4>
+            </button>
+          }
+          {viewerFollower &&
+            <h4><em>You already follow {pet.name}</em></h4>
+          }
+          {viewerOwner &&
+            <Link to={`/pet/${pet.id}/add_image`}>
+              <button className="btn btn-success profile-button"><h4>Add Image</h4></button>
+            </Link>
+          }
         </div>
         <div className="col-sm-12">
           <h4>Images</h4>
@@ -95,7 +115,7 @@ class PetProfile extends Component {
                 </div>
                 <div className="pet-name">
                   <p className="pull-left">
-                    {image.likes} <i className="fa fa-thumbs-o-up"/>
+                    {image.likes} <i className="fa fa-thumbs-o-up" onClick={() => this.likeImage(image.id)}/>
                   </p>
                 </div>
               </div>
@@ -104,6 +124,27 @@ class PetProfile extends Component {
         </div>
       </div>
     )
+  }
+
+  followPet = async () => {
+    const response = await this.props.followPetMutation({
+      variables: {
+        pet_id: parseInt(this.props.match.params.id, 10),
+        follower_id: parseInt(sessionStorage.getItem('Petstagram_Id'), 10)
+      }
+    })
+    const id = response.data.followPet.pet_id
+    if (id) {
+      this.setState({ followRequestSent: true })
+    }
+  }
+
+  likeImage = async (image_id) => {
+    await this.props.likeImageMutation({
+      variables: {
+        image_id
+      }
+    })
   }
 
 }
@@ -144,10 +185,47 @@ const PET_PROFILE_QUERY = gql`
   }
 `
 
-export default graphql(PET_PROFILE_QUERY, {
-  name: 'petProfileQuery',
-  options: (props) => ({
-    variables: { id: props.match.params.id },
-    fetchPolicy: 'cache-and-network'
-  })
-})(PetProfile)
+const FOLLOW_PET_MUTATION = gql`
+  mutation FollowPetMutation($pet_id: Int!, $follower_id: Int!) {
+    followPet(
+      pet_id: $pet_id,
+      follower_id: $follower_id
+    ) {
+      pet_id
+      follower_id
+    }
+  }
+`
+
+const LIKE_IMAGE_MUTATION = gql`
+  mutation LikeImage($image_id: Int!) {
+    likeImage(
+      image_id: $image_id
+    ) {
+      id
+      likes
+    }
+  }
+`
+
+export default compose(
+  graphql(PET_PROFILE_QUERY, {
+    name: 'petProfileQuery',
+    options: (props) => ({
+      variables: { id: props.match.params.id },
+      fetchPolicy: 'cache-and-network'
+    })
+  }),
+  graphql(FOLLOW_PET_MUTATION, {
+    name: 'followPetMutation',
+    options: (props) => ({
+      refetchQueries: [
+        {
+          query: PET_PROFILE_QUERY,
+          variables: { id: props.match.params.id }
+        }
+      ]
+    })
+  }),
+  graphql(LIKE_IMAGE_MUTATION, { name: 'likeImageMutation' })
+)(PetProfile)
