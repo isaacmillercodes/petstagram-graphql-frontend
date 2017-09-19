@@ -16,3 +16,69 @@ h1 {
   background-position: 50% 50%;
   background-size: cover;
 }
+
+.profile-pic, .pet-profile-pic {
+  height: 60vh;
+  width: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.profile-pic {
+  background-position: 5% 50%;
+}
+
+.pet-profile-pic {
+  background-position: 20% 30%;
+}
+
+.profile-pet-row, .profile-user-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.pet-followed-row, .profile-user-row {
+  margin-top: 2%;
+}
+
+.profile-pet-row-item, .profile-user-row-item{
+  height: 8vw;
+  width: 8vw;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.profile-pet-row-item {
+  background-position: 50% 50%;
+}
+
+.profile-user-row-item {
+  background-position: 10% 50%;
+}
+
+.pet-name, .user-name {
+  width: 8vw;
+}
+
+.profile-pet-container:not(:first-child), .profile-user-container:not(:first-child) {
+  margin-left: 2vw;
+}
+
+.pet-followers {
+  margin-left: 10%;
+}
+
+.profile-button {
+  margin-top: 2vh;
+  height: 6vh;
+  width: 12vw;
+}
+
+.profile-button h4 {
+  margin: 0 auto;
+}
+
+.fa-heart {
+  color: red;
+}
