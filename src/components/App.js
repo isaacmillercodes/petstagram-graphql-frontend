@@ -5,6 +5,7 @@ import AuthForm from './AuthForm';
 import UserProfile from './UserProfile';
 import AddPet from './AddPet';
 import PetProfile from './PetProfile';
+import AddPetImage from './AddPetImage';
 
 class App extends Component {
   render() {
@@ -15,6 +16,7 @@ class App extends Component {
         <Route exact path='/profile/:id' component={UserProfile}/>
         <Route exact path='/profile/:id/add_pet' component={AddPet}/>
         <Route exact path='/pet/:id' component={PetProfile}/>
+        <Route exact path='/pet/:id/add_image' component={AddPetImage}/>
       </Switch>
     );
   }

@@ -85,6 +85,11 @@ class PetProfile extends Component {
           {viewerFollower &&
             <h4><em>You already follow {pet.name}</em></h4>
           }
+          {viewerOwner &&
+            <Link to={`/pet/${pet.id}/add_image`}>
+              <button className="btn btn-success profile-button"><h4>Add Image</h4></button>
+            </Link>
+          }
         </div>
         <div className="col-sm-12">
           <h4>Images</h4>
