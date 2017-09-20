@@ -56,8 +56,7 @@ class PetProfile extends Component {
             <span
               className="pull-right"
             >
-              {this.state.profile_likes}
-              <i className="fa fa-thumbs-o-up"/>
+              {this.state.profile_likes} <i className="fa fa-thumbs-o-up"/>
             </span>
           </h4>
         </div>
