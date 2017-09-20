@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 class PetProfile extends Component {
 
   state = {
+    profile_image_id: '',
     profile_image_url: '',
     profile_caption: '',
     profile_likes: '',
@@ -22,7 +23,9 @@ class PetProfile extends Component {
         }
       )
     } else if (nextProps.petProfileQuery.pet && this.state.profile_likes) {
-      this.setState({ profile_likes: ++this.state.profile_likes })
+      this.setState({
+        profile_likes: nextProps.petProfileQuery.pet.images.filter(image => image.id === this.state.profile_image_id)[0].likes
+      })
     }
   }
 
@@ -60,8 +63,7 @@ class PetProfile extends Component {
               className="pull-right"
               onClick={() => this.likeImage(this.state.profile_image_id)}
             >
-              {this.state.profile_likes}
-              <i className="fa fa-thumbs-o-up"/>
+              {this.state.profile_likes} <i className="fa fa-thumbs-o-up"/>
             </span>
           </h4>
         </div>
