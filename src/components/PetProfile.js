@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 class PetProfile extends Component {
 
   state = {
+    profile_image_id: '',
     profile_image_url: '',
     profile_caption: '',
     profile_likes: '',
